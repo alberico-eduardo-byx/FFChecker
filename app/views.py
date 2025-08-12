@@ -29,3 +29,12 @@ class FeatureViewAPIView(APIView):
             {'message': 'API Funcionando'},
             status=status.HTTP_200_OK,
         )
+    
+    def put(self, request):
+        """
+        FeatureToggle.is_feature_active
+        """
+        return Response(
+            {'message': 'API Funcionando'},
+            status=status.HTTP_200_OK,
+        )
