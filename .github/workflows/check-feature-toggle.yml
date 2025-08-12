@@ -56,11 +56,14 @@ jobs:
           script: |
             const matches = `${{ steps.search.outputs.matches }}`;
             const body = `
+            **Atenção**: Detectamos uso de \`FeatureToggle.is_feature_active\` neste PR.
 
-Arquivos/linhas encontrados:
-  \`\`\`${matches}\`\`\``;github.rest.issues.createComment({
-    issue_number-> context.issue.number,
-    owner-> context.repo.owner,
-    repo-> context.repo.repo,
-    body
-  });
+            Lembre-se de atualizar a [documentação de Feature Flags](LINK_DA_DOC).
+
+            Arquivos/linhas encontrados:
+              \`\`\`${matches}\`\`\``;github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body
+              });
