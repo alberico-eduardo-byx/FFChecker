@@ -1,0 +1,69 @@
+name: Check Feature Toggle Mentions
+
+on:
+  pull_request:
+    branches: ["main", "develop"]
+
+jobs:
+  check-feature-toggle:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: files
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          git diff --name-only origin/${{ github.base_ref }} > changed_files.txt
+
+      - name: Search for FeatureToggle mentions
+        id: search
+        run: |
+          MATCHES=""
+          while IFS= read -r file; do
+            if [[ -f "$file" ]]; then
+              FOUND=$(grep -nI -E "FeatureToggle\.is_feature_active" "$file" || true)
+              if [ -n "$FOUND" ]; then
+                MATCHES="$MATCHES\n$file:\n$FOUND"
+              fi
+            fi
+          done < changed_files.txt
+
+          if [ -n "$MATCHES" ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            {
+              echo "matches<<EOF"
+              echo -e "$MATCHES"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Comment on PR if found
+        if: steps.search.outputs.found == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const matches = `${{ steps.search.outputs.matches }}`;
+            const body = `
+🚩 **Atenção**: Detectamos uso de \`FeatureToggle.is_feature_active\` neste PR.
+
+📄 Lembre-se de atualizar a [documentação de Feature Flags](LINK_DA_DOC).
+
+Arquivos/linhas encontrados:
+\`\`\`${matches}\`\`\``;github.rest.issues.createComment({
+  issue_number: context.issue.number,
+  owner: context.repo.owner,
+  repo: context.repo.repo,
+  body
+});
