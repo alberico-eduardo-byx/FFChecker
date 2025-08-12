@@ -23,6 +23,7 @@ class FeatureViewAPIView(APIView):
         Toggle
         FeatureToggle.is_feature_active
         is_feature_active
+        FeatureToggle.is_feature_active
         """
         return Response(
             {'message': 'API Funcionando'},
