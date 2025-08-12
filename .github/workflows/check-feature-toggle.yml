@@ -71,9 +71,9 @@ jobs:
           script: |
             const matches = ${{ toJSON(steps.search.outputs.matches) }};
             const body = [
-              '**Atenção**: Detectamos uso de `FeatureToggle.is_feature_active` neste PR.',
+              '**Atenção**: Detectamos uso de `Feature Flags` neste PR.',
               '',
-              'Lembre-se de atualizar a documentação de Feature Flags: LINK_DA_DOC',
+              'Lembre-se de atualizar a documentação de Feature Flags: [LINK_DA_DOC](https://grupobyx.atlassian.net/wiki/spaces/Tecnologia/pages/1203339279/RFC+5+-+Features+Flags)',
               '',
               'Arquivos/linhas encontrados:',
               '```',
