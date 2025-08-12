@@ -2,7 +2,7 @@ name: Check Feature Toggle Mentions
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches: ["main", "develop"]
 
 jobs:
   check-feature-toggle:
