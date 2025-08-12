@@ -16,7 +16,13 @@ class FeatureViewAPIView(APIView):
             {'message': 'API Funcionando'},
             status=status.HTTP_200_OK,
         )
-    
+
+    def delete(self, request):
+        return Response(
+            {'message': 'API Funcionando'},
+            status=status.HTTP_200_OK,
+        )
+
     def get(self, request):
         """
         Feature
