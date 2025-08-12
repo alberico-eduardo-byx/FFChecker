@@ -9,6 +9,9 @@ class FeatureViewAPIView(APIView):
     FeatureToggle.is_feature_active
     """
     def post(self, request):
+        """
+        FeatureToggle.is_feature_active
+        """
         return Response(
             {'message': 'API Funcionando'},
             status=status.HTTP_200_OK,
