@@ -21,6 +21,7 @@ class FeatureViewAPIView(APIView):
         """
         Feature
         Toggle
+        FeatureToggle.is_feature_active
         is_feature_active
         FeatureToggle.is_feature_active
         """
