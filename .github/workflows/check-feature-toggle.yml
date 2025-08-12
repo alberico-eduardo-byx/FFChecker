@@ -61,9 +61,9 @@ jobs:
 📄 Lembre-se de atualizar a [documentação de Feature Flags](LINK_DA_DOC).
 
 Arquivos/linhas encontrados:
-\`\`\`${matches}\`\`\``;github.rest.issues.createComment({
-  issue_number: context.issue.number,
-  owner: context.repo.owner,
-  repo: context.repo.repo,
-  body
-});
+  \`\`\`${matches}\`\`\``;github.rest.issues.createComment({
+    issue_number: context.issue.number,
+    owner: context.repo.owner,
+    repo: context.repo.repo,
+    body
+  });
