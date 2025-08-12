@@ -29,21 +29,34 @@ jobs:
       - name: Search for FeatureToggle mentions
         id: search
         run: |
-          MATCHES=""
-          while IFS= read -r file; do
-            if [[ -f "$file" ]]; then
-              FOUND=$(grep -nI -E "FeatureToggle\.is_feature_active" "$file" || true)
-              if [ -n "$FOUND" ]; then
-                MATCHES="$MATCHES\n$file:\n$FOUND"
-              fi
-            fi
-          done < changed_files.txt
+          # Scan only added lines in the PR diff for the target pattern
+          PATTERN='FeatureToggle\.is_feature_active'
+          DIFF_OUTPUT=$(git diff --unified=0 --diff-filter=AM origin/${{ github.base_ref }}...HEAD |
+            awk '
+              /^\+\+\+ b\// { file = substr($0, 7); next }
+              /^@@/ {
+                # Extract starting line number of the new hunk (after the +)
+                if (match($0, /\+([0-9]+)/, m)) { newLine = m[1] + 0 } else { newLine = 0 }
+                next
+              }
+              # Added lines (exclude file header lines starting with +++)
+              substr($0,1,1) == "+" && substr($0,1,3) != "+++" {
+                print file ":" newLine ":" substr($0,2)
+                newLine++
+                next
+              }
+              # Context lines increment the line counter as well (when present)
+              substr($0,1,1) == " " { newLine++; next }
+              # Deleted lines do not increment newLine
+            ')
+
+          MATCHES=$(printf "%s\n" "$DIFF_OUTPUT" | grep -E "$PATTERN" || true)
 
           if [ -n "$MATCHES" ]; then
             echo "found=true" >> "$GITHUB_OUTPUT"
             {
               echo "matches<<EOF"
-              echo -e "$MATCHES"
+              echo "$MATCHES"
               echo "EOF"
             } >> "$GITHUB_OUTPUT"
           else
@@ -56,7 +69,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const matches = ${{ toJson(steps.search.outputs.matches) }};
+            const matches = ${{ toJSON(steps.search.outputs.matches) }};
             const body = [
               '**Atenção**: Detectamos uso de `FeatureToggle.is_feature_active` neste PR.',
               '',
