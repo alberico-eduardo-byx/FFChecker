@@ -56,11 +56,8 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            // Safely capture multiline output from previous step
-            const matches = ${{ toJSON(steps.search.outputs.matches) }};
-            const marker = '<!-- feature-toggle-check -->';
+            const matches = `${{ steps.search.outputs.matches }}`;
             const body = [
-              marker,
               '**Atenção**: Detectamos uso de `FeatureToggle.is_feature_active` neste PR.',
               '',
               'Lembre-se de atualizar a documentação de Feature Flags: LINK_DA_DOC',
@@ -71,26 +68,9 @@ jobs:
               '```',
             ].join('\n');
 
-            // Avoid duplicate comments: update existing if marker is found
-            const { data: comments } = await github.rest.issues.listComments({
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              per_page: 100,
+              body,
             });
-            const existing = comments.find(c => c.body && c.body.includes(marker));
-            if (existing) {
-              await github.rest.issues.updateComment({
-                comment_id: existing.id,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body,
-              });
-            }
