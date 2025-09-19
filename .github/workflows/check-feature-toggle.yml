@@ -165,7 +165,7 @@ jobs:
 
             if (added.trim()) {
               sections.push(
-                'Adicionar na documentação (linhas adicionadas):',
+                'Aparições (linhas adicionadas):',
                 '```',
                 added,
                 '```',
@@ -181,7 +181,7 @@ jobs:
 
             if (removed.trim()) {
               sections.push(
-                'Remover da documentação (linhas removidas):',
+                'Aparições (linhas removidas):',
                 '```',
                 removed,
                 '```',
