@@ -27,7 +27,6 @@ class FeatureViewAPIView(APIView):
         """
         Feature
         Toggle
-        FeatureToggle.is_feature_active('aaaaaa')
         is_feature_active
         FeatureToggle.is_feature_active
         """
@@ -39,6 +38,7 @@ class FeatureViewAPIView(APIView):
     def put(self, request):
         """
         aaaa
+        FeatureToggle.is_feature_active('Alberico')
         """
         return Response(
             {'message': 'API Funcionando'},
