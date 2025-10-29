@@ -18,6 +18,9 @@ class FeatureViewAPIView(APIView):
         )
 
     def delete(self, request):
+        """
+        FeatureToggle.is_feature_active('berico')
+        """
         return Response(
             {'message': 'API Funcionando'},
             status=status.HTTP_200_OK,
@@ -28,7 +31,7 @@ class FeatureViewAPIView(APIView):
         Feature
         Toggle
         is_feature_active
-        FeatureToggle.is_feature_active
+        FeatureToggle.is_feature_active('berico')
         """
         return Response(
             {'message': 'API Funcionando'},
@@ -38,7 +41,6 @@ class FeatureViewAPIView(APIView):
     def put(self, request):
         """
         aaaa
-        FeatureToggle.is_feature_active('Alberico')
         """
         return Response(
             {'message': 'API Funcionando'},
