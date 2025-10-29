@@ -24,14 +24,14 @@ jobs:
           # Fetch the base branch to enable a proper 3-dot diff
           git fetch origin ${{ github.base_ref }} --depth=1
           # List files changed in this PR compared to the base branch
-          git diff --name-only origin/${{ github.base_ref }}...HEAD > changed_files.txt
+          git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.py' > changed_files.txt
 
       - name: Search for FeatureToggle mentions
         id: search
         run: |
           # Scan only added lines in the PR diff for the target pattern
           PATTERN='FeatureToggle\.is_feature_active'
-          DIFF_OUTPUT=$(git diff --unified=0 --diff-filter=AM origin/${{ github.base_ref }}...HEAD |
+          DIFF_OUTPUT=$(git diff --unified=0 --diff-filter=AM origin/${{ github.base_ref }}...HEAD -- '*.py' |
             awk '
               # Capture old and new file names
               /^--- a\// { oldFile = substr($0, 7); next }
